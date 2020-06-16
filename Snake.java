@@ -10,9 +10,10 @@ public class Snake extends GEngine
 {
     LinkedList<Box> snake = new LinkedList<Box>();
     Box food;
-    Collision foo; 
+    Collision foo;
+    int score;
     Collision Bounds ;
-    static int s = 15;
+    static int s = 30;
     int vx = 0;
     int vy = 0;
     KeyState key ;
@@ -21,9 +22,9 @@ public class Snake extends GEngine
     {
         key = new KeyState();
         Bounds = new Collision(0,0,d.sw,d.sh);
-        food = new Box( d.sw/2 , d.sh/2 , Color.YELLOW);
+        food = new Box(d.sw/2 + 2*s, d.sh/2 + 2*s , new Color((int)(Math.random()*200+55),(int)(Math.random()*200+55),(int)(Math.random()*200+55)));;
         foo = new Collision(food.x , food.y , food.x+s-1 , food.y+s-1);
-        setBorder(new LineBorder(Color.BLACK , 3 , true));
+        setBorder(new LineBorder(Color.WHITE , 5 , true));
     }
 
     public void init()
@@ -37,17 +38,23 @@ public class Snake extends GEngine
         for(int i = snake.size()-1; i>=1   ; i--)
         {
             snake.get(i).x = snake.get(i-1).x;
-            snake.get(i).y = snake.get(i-1).y;
+            snake.get(i).y = snake.get(i-1).y; 
         }
         snake.getFirst().x += vx*s ;
         snake.getFirst().y += vy*s ;
+        for(int i = snake.size()-1; i>=1   ; i--)
+        {
+            if((snake.getFirst().x == snake.get(i).x)&&(snake.getFirst().y == snake.get(i).y))
+            {
+                snake.pollLast();score++;
+            }
+        }
     }
 
     public void update(Graphics2D g)
     {
         //render
-
-        g.setColor(Color.YELLOW);
+        g.setColor(food.c);
         g.fillOval(food.x , food.y , s-1 ,s-1);
 
         for(int i = 0 ; i < snake.size() ;i++)
@@ -55,6 +62,7 @@ public class Snake extends GEngine
             g.setColor(snake.get(i).c);
             g.fillRect(snake.get(i).x,snake.get(i).y,s-1,s-1);
         }
+        //jauxta position of reality and fantacy
 
         //eating ham 
 
@@ -83,13 +91,17 @@ public class Snake extends GEngine
 
     public void gameOver(Graphics2D g)
     {
-        g.clearRect(0,0,d.sw,d.sh);
-        g.setColor(Color.ORANGE);
+        g.setBackground(Color.YELLOW);
+        g.clearRect(100,100,500,500);
+        g.setColor(Color.BLUE);
         g.setFont(new Font("castellar" , Font.BOLD , 48));
         g.drawString("GAME OVER",d.sw/2-175,d.sh/2 - 30);
         g.setFont(new Font("castellar" , Font.BOLD , 36));
         g.setColor(Color.MAGENTA);
         g.drawString("Score: "+(snake.size()-1),d.sw/2-100,d.sh/2+26);
+        g.setFont(new Font("castellar" , Font.BOLD , 36));
+        g.setColor(Color.RED);
+        g.drawString("Punishments: "+score,d.sw/2-170,d.sh/2+76);
     }
 
     public void food()
@@ -97,7 +109,7 @@ public class Snake extends GEngine
         int x = 0;
         int y = 0;
         x = (int)(Math.random()*650) + (int)(Math.random()*650)%s ;y =(int)(Math.random()*650) + (int)(Math.random()*650)%s;
-        food = new Box(x, y , Color.YELLOW);
+        food = new Box(x, y , new Color((int)(Math.random()*200+55),(int)(Math.random()*200+55),(int)(Math.random()*200+55)));
         foo = new Collision(food.x , food.y , food.x+s , food.y+s);
         add();
     }
@@ -135,10 +147,7 @@ public class Snake extends GEngine
 
     private class KeyState implements KeyListener
     {
-        public void keyReleased(KeyEvent e)
-        {
-
-        }
+        public void keyReleased(KeyEvent e){}
 
         public void keyPressed(KeyEvent e)
         {
@@ -165,12 +174,7 @@ public class Snake extends GEngine
                 vy = 0;
                 vx = 1;
             }
-
-            if(e.getKeyCode() == KeyEvent.VK_SPACE)
-            {
-                add();
-            }
-
+            
             if(e.getKeyCode() == KeyEvent.VK_ENTER)
             {
                 d.kill();
@@ -178,9 +182,6 @@ public class Snake extends GEngine
             }
         }
 
-        public void keyTyped(KeyEvent e)
-        {
-
-        }
+        public void keyTyped(KeyEvent e){}
     }
 }

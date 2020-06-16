@@ -2,6 +2,7 @@ import javax.swing.JPanel;
 import java.awt.event.KeyListener;
 import java.awt.event.KeyEvent;
 import java.awt.Graphics;
+import java.awt.Color;
 import java.awt.Graphics2D;
 
 public class GEngine extends JPanel
@@ -25,6 +26,7 @@ public class GEngine extends JPanel
     {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D)(g);
+        g2.setBackground(Color.BLACK);
         g2.clearRect(0,0,d.sw,d.sh);
         update(g2);
         try{Thread.sleep(fps);}catch(Exception e){}
