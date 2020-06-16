@@ -13,7 +13,7 @@ public class Snake extends GEngine
     Collision foo;
     int score;
     Collision Bounds ;
-    static int s = 30;
+    static int s = 20;
     int vx = 0;
     int vy = 0;
     KeyState key ;
