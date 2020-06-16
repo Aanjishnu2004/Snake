@@ -9,6 +9,8 @@ import javax.swing.border.LineBorder;
 public class Snake extends GEngine
 {
     LinkedList<Box> snake = new LinkedList<Box>();
+    AssetLoader foodSprite;
+    int count=0;
     Box food;
     Collision foo;
     int score;
@@ -21,15 +23,18 @@ public class Snake extends GEngine
     Snake()
     {
         key = new KeyState();
+        foodSprite = new AssetLoader();
+        foodSprite.loadImage("food.png");
         Bounds = new Collision(0,0,d.sw,d.sh);
-        food = new Box(d.sw/2 + 2*s, d.sh/2 + 2*s , new Color((int)(Math.random()*200+55),(int)(Math.random()*200+55),(int)(Math.random()*200+55)));;
+        food = new Box(d.sw/2 + 2*s, d.sh/2 + 2*s , Color.WHITE);
         foo = new Collision(food.x , food.y , food.x+s-1 , food.y+s-1);
-        setBorder(new LineBorder(Color.WHITE , 5 , true));
+        setBorder(new LineBorder(Color.YELLOW , 5 , true));
     }
 
     public void init()
     {
         Box head = new Box(d.sw/2, d.sh/2 , Color.RED);
+        a.cringe("music1.wav");
         snake.push(head);
     }
 
@@ -46,7 +51,7 @@ public class Snake extends GEngine
         {
             if((snake.getFirst().x == snake.get(i).x)&&(snake.getFirst().y == snake.get(i).y))
             {
-                snake.pollLast();score++;
+                snake.pollLast();score++;a.cringe("eatb.wav");
             }
         }
     }
@@ -55,7 +60,7 @@ public class Snake extends GEngine
     {
         //render
         g.setColor(food.c);
-        g.fillOval(food.x , food.y , s-1 ,s-1);
+        g.drawImage(foodSprite.i , food.x , food.y , null);
 
         for(int i = 0 ; i < snake.size() ;i++)
         {
@@ -91,6 +96,11 @@ public class Snake extends GEngine
 
     public void gameOver(Graphics2D g)
     {
+        if(count == 0)
+        {
+            //a.terminate(sound);
+            a.cringe("music2.wav");count++;
+        }   
         g.setBackground(Color.YELLOW);
         g.clearRect(100,100,500,500);
         g.setColor(Color.BLUE);
@@ -102,6 +112,7 @@ public class Snake extends GEngine
         g.setFont(new Font("castellar" , Font.BOLD , 36));
         g.setColor(Color.RED);
         g.drawString("Punishments: "+score,d.sw/2-170,d.sh/2+76);
+        //a.terminate(sound_front);
     }
 
     public void food()
@@ -109,20 +120,23 @@ public class Snake extends GEngine
         int x = 0;
         int y = 0;
         x = (int)(Math.random()*650) + (int)(Math.random()*650)%s ;y =(int)(Math.random()*650) + (int)(Math.random()*650)%s;
-        food = new Box(x, y , new Color((int)(Math.random()*200+55),(int)(Math.random()*200+55),(int)(Math.random()*200+55)));
+        food = new Box(x, y , Color.WHITE);
         foo = new Collision(food.x , food.y , food.x+s , food.y+s);
+        a.cringe("eater.wav");
         add();
     }
 
     public void add()
     {
-        snake.getFirst().setColor(Color.GREEN);
+        Color c1 = new Color(0,(int)(Math.random()*255),(int)(Math.random()*155+100)).brighter();
+        snake.getFirst().setColor(c1);
         snake.push(new Box(snake.getFirst().x+s*vx , snake.getFirst().y+s*vy , Color.RED));
     }
 
     public static void main(String args[])
     {
         Snake s = new Snake();
+        //s.menu();
         s.init();
         s.create();
         s.initKeys(s.key);
@@ -174,7 +188,7 @@ public class Snake extends GEngine
                 vy = 0;
                 vx = 1;
             }
-            
+
             if(e.getKeyCode() == KeyEvent.VK_ENTER)
             {
                 d.kill();

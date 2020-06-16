@@ -4,15 +4,21 @@ import java.awt.event.KeyEvent;
 import java.awt.Graphics;
 import java.awt.Color;
 import java.awt.Graphics2D;
-
+import javax.sound.sampled.Clip;
 public class GEngine extends JPanel
 {
     DEngine d;
+    AEngine a;
+    AssetLoader al;
+    //Clip sound;
+    //Clip sound_front;
     int fps ; 
-
     public GEngine()
     {
-        d = new DEngine();   
+        d = new DEngine();
+        a = new AEngine();
+        al = new AssetLoader();
+        al.loadImage("back.png");
         d.init();
         fps = 60;
     }
@@ -26,8 +32,15 @@ public class GEngine extends JPanel
     {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D)(g);
-        g2.setBackground(Color.BLACK);
         g2.clearRect(0,0,d.sw,d.sh);
+        try
+        {
+            g2.drawImage(al.i,0,0,null);
+        }
+        catch(Exception e)
+        {
+            g2.setBackground(Color.BLACK);
+        }
         update(g2);
         try{Thread.sleep(fps);}catch(Exception e){}
         repaint();
@@ -35,6 +48,7 @@ public class GEngine extends JPanel
 
     public void create()
     {
+        //sound = a.music("music1.wav");
         d.add(this);
         d.visibility();
     }
@@ -53,7 +67,7 @@ public class GEngine extends JPanel
         setFocusable(true);
         requestFocus();
     }
-    
+
     private class KeyState implements KeyListener
     {
         public void keyReleased(KeyEvent e)

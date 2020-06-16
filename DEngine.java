@@ -8,7 +8,6 @@ public class DEngine
     int sch , scw;
     JFrame j;   
     Toolkit t;
-    
     DEngine()
     {
         sh = sw = 700 ;
@@ -18,7 +17,7 @@ public class DEngine
         sch = (int)t.getScreenSize().getHeight();
         scw = (int)t.getScreenSize().getWidth();
     }
-    
+
     public void init()
     {
         j.setSize(sw , sh);
@@ -26,17 +25,17 @@ public class DEngine
         j.setResizable(false);
         j.setUndecorated(true);
     }
-    
+
     public void add(JComponent j)
     {
         this.j.add(j);
     }
-    
+
     public void visibility()
     {
         this.j.setVisible(true);
     }
-    
+
     public void kill()
     {
         j.dispose();
