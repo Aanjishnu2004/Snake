@@ -25,6 +25,7 @@ public class DEngine
         j.setLocation(scw/2-sw/2 , sch/2-sh/2);
         j.setResizable(false);
         j.setUndecorated(true);
+        j.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
     public void add(JComponent j)
