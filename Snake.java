@@ -4,12 +4,19 @@ import java.util.LinkedList;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.Font;
+import java.awt.geom.Rectangle2D;
+import java.awt.GradientPaint;
+import javax.swing.JOptionPane;
 import javax.swing.border.LineBorder;
 
 public class Snake extends GEngine
 {
     LinkedList<Box> snake = new LinkedList<Box>();
+    int[] states = new int[]{0,1,2,3};
+    int state = 0;
     AssetLoader foodSprite;
+    AssetLoader splashPic;
+    AssetLoader controls;
     int count=0;
     Box food;
     Collision foo;
@@ -19,18 +26,33 @@ public class Snake extends GEngine
     int vx = 0;
     int vy = 0;
     KeyState key ;
-    boolean loop = true;
+    //boolean loop = true;
     Snake()
     {
         key = new KeyState();
         foodSprite = new AssetLoader();
+        splashPic = new AssetLoader();
+        controls = new AssetLoader();
+        controls.loadImage("control.png");
         foodSprite.loadImage("food.png");
+        splashPic.loadImage("splash.png");
         Bounds = new Collision(0,0,d.sw,d.sh);
         food = new Box(d.sw/2 + 2*s, d.sh/2 + 2*s , Color.WHITE);
         foo = new Collision(food.x , food.y , food.x+s-1 , food.y+s-1);
-        setBorder(new LineBorder(Color.YELLOW , 5 , true));
+        setBorder(new LineBorder(Color.RED ,4, true));
     }
 
+    public void splash(Graphics2D g)
+    {
+        g.drawImage(splashPic.i ,0,0,null );
+        vx = 0 ; vy = 0;
+    }
+
+    public void controls(Graphics2D g)
+    {
+        g.drawImage(controls.i ,0,0,null );
+    }
+    
     public void init()
     {
         Box head = new Box(d.sw/2, d.sh/2 , Color.RED);
@@ -58,37 +80,47 @@ public class Snake extends GEngine
 
     public void update(Graphics2D g)
     {
-        //render
-        g.setColor(food.c);
-        g.drawImage(foodSprite.i , food.x , food.y , null);
-
-        for(int i = 0 ; i < snake.size() ;i++)
+        if(state == states[0])
         {
-            g.setColor(snake.get(i).c);
-            g.fillRect(snake.get(i).x,snake.get(i).y,s-1,s-1);
+            splash(g);
         }
-        //jauxta position of reality and fantacy
-
-        //eating ham 
-
-        if(foo.inXY((2*snake.getFirst().x+s)/2,(2*snake.getFirst().y+s)/2))
+        else if(state == states[3])
         {
-            //System.out.println("food!!");
-            food();
+            controls(g);
         }
+        else A :if(state == states[1])
+        {
+            //render
+            g.setColor(food.c);
+            g.drawImage(foodSprite.i , food.x , food.y , null);
 
-        //logic 
-        if(Bounds.X(snake.getFirst().x) || Bounds._X(snake.getFirst().x))
-        {
-            loop = false;
-        }
-        if(Bounds.Y(snake.getFirst().y) || Bounds._Y(snake.getFirst().y))
-        {
-            loop = false;
-        }
-        if(loop)
+            for(int i = 0 ; i < snake.size() ;i++)
+            {
+                g.setColor(snake.get(i).c);
+                g.fillRect(snake.get(i).x,snake.get(i).y,s-1,s-1);
+            }
+            //jauxta position of reality and fantacy
+
+            //eating ham 
+
+            if(foo.inXY((2*snake.getFirst().x+s)/2,(2*snake.getFirst().y+s)/2))
+            {
+                //System.out.println("food!!");
+                food();
+            }
+
+            //logic 
+            if(Bounds.X(snake.getFirst().x) || Bounds._X(snake.getFirst().x))
+            {
+                state = states[2];break A;
+            }
+            if(Bounds.Y(snake.getFirst().y) || Bounds._Y(snake.getFirst().y))
+            {
+                state = states[2];break A;
+            }
             updater();
-        if(!loop)
+        }
+        if(state == states[2])
         {
             gameOver(g);
         }
@@ -101,8 +133,10 @@ public class Snake extends GEngine
             //a.terminate(sound);
             a.cringe("music2.wav");count++;
         }   
-        g.setBackground(Color.YELLOW);
-        g.clearRect(100,100,500,500);
+        GradientPaint gp = new GradientPaint(0,0,Color.YELLOW,500,250,Color.WHITE,true);
+        g.setPaint(gp);
+        g.fill(new Rectangle2D.Double(100,100,500,500));
+        g.fillRect(100,100,500,500);
         g.setColor(Color.BLUE);
         g.setFont(new Font("castellar" , Font.BOLD , 48));
         g.drawString("GAME OVER",d.sw/2-175,d.sh/2 - 30);
@@ -112,6 +146,9 @@ public class Snake extends GEngine
         g.setFont(new Font("castellar" , Font.BOLD , 36));
         g.setColor(Color.RED);
         g.drawString("Punishments: "+score,d.sw/2-170,d.sh/2+76);
+        g.setFont(new Font("castellar" , Font.BOLD , 24));
+        g.setColor(Color.BLACK);
+        g.drawString("Press [ENTER] to exit ",d.sw/2-150,d.sh/2+126);
         //a.terminate(sound_front);
     }
 
@@ -128,7 +165,7 @@ public class Snake extends GEngine
 
     public void add()
     {
-        Color c1 = new Color(0,(int)(Math.random()*255),(int)(Math.random()*155+100)).brighter();
+        Color c1 = new Color(0,(int)(Math.random()*255),0).brighter();
         snake.getFirst().setColor(c1);
         snake.push(new Box(snake.getFirst().x+s*vx , snake.getFirst().y+s*vy , Color.RED));
     }
@@ -165,10 +202,28 @@ public class Snake extends GEngine
 
         public void keyPressed(KeyEvent e)
         {
+            if(e.getKeyCode() == KeyEvent.VK_1 && state == 0)
+            {
+                state = states[1];
+            }
+
+            if(e.getKeyCode() == KeyEvent.VK_2 && state == 0)
+            {
+                state = states[3];
+            }
+
             if(e.getKeyCode() == KeyEvent.VK_UP)
             {
                 vy = -1;
                 vx = 0;
+            }
+
+            if(e.getKeyCode() == KeyEvent.VK_ESCAPE)    
+            {
+                if(state == states[1])
+                    {vx = 0 ; vy = 0; }
+                if(state == states[3])
+                    {state = 0;}
             }
 
             if(e.getKeyCode() == KeyEvent.VK_DOWN)
@@ -191,8 +246,11 @@ public class Snake extends GEngine
 
             if(e.getKeyCode() == KeyEvent.VK_ENTER)
             {
-                d.kill();
-                //JOptionPane.showMessageDialog(null,"THANKS FOR PLAYING!!","",JOptionPane.INFORMATION_MESSAGE);
+                if(state != states[1])
+                {
+                    d.kill();
+                    JOptionPane.showMessageDialog(null,"THANKS FOR PLAYING!!","",JOptionPane.INFORMATION_MESSAGE);
+                }            
             }
         }
 

@@ -20,7 +20,7 @@ public class GEngine extends JPanel
         al = new AssetLoader();
         al.loadImage("back.png");
         d.init();
-        fps = 60;
+        fps = 50;
     }
 
     public void update(Graphics2D g)

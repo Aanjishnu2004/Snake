@@ -6,14 +6,15 @@ public class DEngine
 {
     int sh , sw ;
     int sch , scw;
-    JFrame j;   
+    JFrame j;
     Toolkit t;
     DEngine()
     {
         sh = sw = 700 ;
         j = new JFrame("ClassicSnake");
         Toolkit t = Toolkit.getDefaultToolkit();
-        j.setIconImage(t.getImage(getClass().getResource("icon.png")));
+        AssetLoader as = new AssetLoader();as.loadImage("icon.png");
+        j.setIconImage(as.i);
         sch = (int)t.getScreenSize().getHeight();
         scw = (int)t.getScreenSize().getWidth();
     }
