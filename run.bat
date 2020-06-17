@@ -1,2 +1,2 @@
-start javac *.java
-start javaw Snake
+javac *.java
+java Snake
