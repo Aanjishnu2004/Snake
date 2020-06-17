@@ -35,6 +35,8 @@ public class DEngine
     public void visibility()
     {
         this.j.setVisible(true);
+        this.j.toFront();
+        this.j.requestFocus();
     }
 
     public void kill()
