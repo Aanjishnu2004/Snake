@@ -1,5 +1,6 @@
 # Snake
 
-#This is a Snake Game.
-
-#Controls :: arrow keys , enter(TO CLOSE WINDOW)
+# User Instruction: 
+1> Download File as Zip
+2> Run the run.bat file
+3> enjoy
