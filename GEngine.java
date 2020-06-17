@@ -10,7 +10,7 @@ public class GEngine extends JPanel
     DEngine d;
     AEngine a;
     AssetLoader al;
-    //Clip sound;
+    Clip sound;
     //Clip sound_front;
     int fps ; 
     public GEngine()
@@ -48,7 +48,6 @@ public class GEngine extends JPanel
 
     public void create()
     {
-        //sound = a.music("music1.wav");
         d.add(this);
         d.visibility();
     }

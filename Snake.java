@@ -52,7 +52,7 @@ public class Snake extends GEngine
     {
         g.drawImage(controls.i ,0,0,null );
     }
-    
+
     public void init()
     {
         Box head = new Box(d.sw/2, d.sh/2 , Color.RED);
@@ -91,6 +91,10 @@ public class Snake extends GEngine
         else A :if(state == states[1])
         {
             //render
+            if(count == 0)
+            {
+                sound = a.music("music.wav");count++;
+            }
             g.setColor(food.c);
             g.drawImage(foodSprite.i , food.x , food.y , null);
 
@@ -128,9 +132,9 @@ public class Snake extends GEngine
 
     public void gameOver(Graphics2D g)
     {
-        if(count == 0)
+        if(count == 1)
         {
-            //a.terminate(sound);
+            a.terminate(sound);
             a.cringe("music2.wav");count++;
         }   
         GradientPaint gp = new GradientPaint(0,0,Color.YELLOW,500,250,Color.WHITE,true);
@@ -221,9 +225,9 @@ public class Snake extends GEngine
             if(e.getKeyCode() == KeyEvent.VK_ESCAPE)    
             {
                 if(state == states[1])
-                    {vx = 0 ; vy = 0; }
+                {vx = 0 ; vy = 0; }
                 if(state == states[3])
-                    {state = 0;}
+                {state = 0;}
             }
 
             if(e.getKeyCode() == KeyEvent.VK_DOWN)
